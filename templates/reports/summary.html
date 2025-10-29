@@ -1,0 +1,310 @@
+{% extends 'base.html' %}
+
+{% block title %}年度報表摘要 - {{ year }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <!-- 頁面標題 -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2>
+        <i class="bi bi-calendar-range"></i>
+        {{ year }} 年度報表摘要
+      </h2>
+      <p class="text-muted mb-0">查看整年度的財務概況</p>
+    </div>
+    <div>
+      <!-- 年份選擇 -->
+      <div class="btn-group">
+        <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
+          {{ year }} 年
+        </button>
+        <ul class="dropdown-menu">
+          {% for y in available_years %}
+          <li>
+            <a class="dropdown-item {% if y == year %}active{% endif %}"
+              href="{{ url_for('reports.yearly_summary', year=y) }}">
+              {{ y }} 年
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 年度統計卡片 -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card border-primary">
+        <div class="card-body">
+          <h6 class="card-subtitle mb-2 text-muted">
+            <i class="bi bi-arrow-up-circle text-success"></i> 總收入
+          </h6>
+          <h3 class="card-title text-success mb-0">
+            ${{ "{:,.2f}".format(yearly_stats.total_income) }}
+          </h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card border-danger">
+        <div class="card-body">
+          <h6 class="card-subtitle mb-2 text-muted">
+            <i class="bi bi-arrow-down-circle text-danger"></i> 總支出
+          </h6>
+          <h3 class="card-title text-danger mb-0">
+            ${{ "{:,.2f}".format(yearly_stats.total_expense) }}
+          </h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card border-info">
+        <div class="card-body">
+          <h6 class="card-subtitle mb-2 text-muted">
+            <i class="bi bi-wallet2"></i> 淨額
+          </h6>
+          <h3 class="card-title {% if yearly_stats.net_amount >= 0 %}text-success{% else %}text-danger{% endif %} mb-0">
+            ${{ "{:,.2f}".format(yearly_stats.net_amount) }}
+          </h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card border-warning">
+        <div class="card-body">
+          <h6 class="card-subtitle mb-2 text-muted">
+            <i class="bi bi-piggy-bank"></i> 儲蓄率
+          </h6>
+          <h3 class="card-title text-warning mb-0">
+            {{ "{:.1f}".format(yearly_stats.savings_rate) }}%
+          </h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 平均值統計 -->
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="card-subtitle mb-2 text-muted">
+            <i class="bi bi-graph-up"></i> 平均月收入
+          </h6>
+          <h4 class="mb-0 text-success">
+            ${{ "{:,.2f}".format(yearly_stats.average_monthly_income) }}
+          </h4>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="card-subtitle mb-2 text-muted">
+            <i class="bi bi-graph-down"></i> 平均月支出
+          </h6>
+          <h4 class="mb-0 text-danger">
+            ${{ "{:,.2f}".format(yearly_stats.average_monthly_expense) }}
+          </h4>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 月度報表列表 -->
+  <div class="card">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">
+        <i class="bi bi-calendar3"></i>
+        月度報表明細
+        <span class="badge bg-light text-dark">{{ yearly_stats.months_with_data }} 個月</span>
+      </h5>
+    </div>
+    <div class="card-body">
+      {% if monthly_reports %}
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>月份</th>
+              <th class="text-end">收入</th>
+              <th class="text-end">支出</th>
+              <th class="text-end">淨額</th>
+              <th class="text-end">儲蓄率</th>
+              <th class="text-center">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for report in monthly_reports %}
+            <tr>
+              <td>
+                <strong>{{ report.month }} 月</strong>
+              </td>
+              <td class="text-end text-success">
+                ${{ "{:,.2f}".format(report.total_income) }}
+              </td>
+              <td class="text-end text-danger">
+                ${{ "{:,.2f}".format(report.total_expense) }}
+              </td>
+              <td class="text-end {% if report.net_amount >= 0 %}text-success{% else %}text-danger{% endif %}">
+                ${{ "{:,.2f}".format(report.net_amount) }}
+              </td>
+              <td class="text-end">
+                {% set savings_rate = (report.net_amount / report.total_income * 100) if report.total_income > 0 else 0
+                %}
+                <span
+                  class="badge {% if savings_rate >= 30 %}bg-success{% elif savings_rate >= 20 %}bg-info{% elif savings_rate >= 10 %}bg-warning{% else %}bg-secondary{% endif %}">
+                  {{ "{:.1f}".format(savings_rate) }}%
+                </span>
+              </td>
+              <td class="text-center">
+                <a href="{{ url_for('reports.detail', year=report.year, month=report.month) }}"
+                  class="btn btn-sm btn-outline-primary">
+                  <i class="bi bi-eye"></i> 查看詳情
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="text-center py-5">
+        <img src="{{ url_for('static', filename='images/no-data.svg') }}" alt="暫無資料"
+          style="width: 200px; opacity: 0.5;">
+        <p class="text-muted mt-3">{{ year }} 年尚無月度報表</p>
+        <a href="{{ url_for('reports.index') }}" class="btn btn-primary">
+          <i class="bi bi-arrow-left"></i> 返回報表列表
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- 年度趨勢圖表 -->
+  {% if monthly_reports %}
+  <div class="card mt-4">
+    <div class="card-header bg-info text-white">
+      <h5 class="mb-0">
+        <i class="bi bi-graph-up"></i>
+        年度趨勢分析
+      </h5>
+    </div>
+    <div class="card-body">
+      <canvas id="yearlyTrendChart" height="100"></canvas>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- 返回按鈕 -->
+  <div class="mt-4 mb-5">
+    <a href="{{ url_for('reports.index') }}" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left"></i> 返回報表列表
+    </a>
+  </div>
+</div>
+
+{% if monthly_reports %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // 年度趨勢圖表
+    const ctx = document.getElementById('yearlyTrendChart');
+
+    const months = [
+      {% for report in monthly_reports %}
+        {{ report.month }}{% if not loop.last %}, {% endif %}
+  {% endfor %}
+    ];
+
+  const incomes = [
+    {% for report in monthly_reports %}
+  { { report.total_income } } {% if not loop.last %}, {% endif %}
+  {% endfor %}
+    ];
+
+  const expenses = [
+    {% for report in monthly_reports %}
+  { { report.total_expense } } {% if not loop.last %}, {% endif %}
+  {% endfor %}
+    ];
+
+  const nets = [
+    {% for report in monthly_reports %}
+  { { report.net_amount } } {% if not loop.last %}, {% endif %}
+  {% endfor %}
+    ];
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: months.map(m => m + '月'),
+      datasets: [
+        {
+          label: '收入',
+          data: incomes,
+          borderColor: 'rgb(25, 135, 84)',
+          backgroundColor: 'rgba(25, 135, 84, 0.1)',
+          tension: 0.3
+        },
+        {
+          label: '支出',
+          data: expenses,
+          borderColor: 'rgb(220, 53, 69)',
+          backgroundColor: 'rgba(220, 53, 69, 0.1)',
+          tension: 0.3
+        },
+        {
+          label: '淨額',
+          data: nets,
+          borderColor: 'rgb(13, 110, 253)',
+          backgroundColor: 'rgba(13, 110, 253, 0.1)',
+          tension: 0.3
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top'
+        },
+        tooltip: {
+          mode: 'index',
+          intersect: false,
+          callbacks: {
+            label: function (context) {
+              let label = context.dataset.label || '';
+              if (label) {
+                label += ': ';
+              }
+              label += '$' + context.parsed.y.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+              return label;
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function (value) {
+              return '$' + value.toFixed(0).replace(/\d(?=(\d{3})+$)/g, '$&,');
+            }
+          }
+        }
+      }
+    }
+  });
+});
+</script>
+{% endif %}
+{% endblock %}

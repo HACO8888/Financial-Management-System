@@ -249,18 +249,20 @@ def summary():
     ).order_by(MonthlyReport.month).all()
     
     # 計算年度統計
-    yearly_stats = {
-        'total_income': sum(float(r.total_income) for r in monthly_reports),
-        'total_expense': sum(float(r.total_expense) for r in monthly_reports),
-        'net_amount': sum(float(r.net_amount) for r in monthly_reports),
-        'avg_monthly_income': 0,
-        'avg_monthly_expense': 0,
-        'months_with_data': len(monthly_reports)
-    }
+    total_income = sum(float(r.total_income) for r in monthly_reports)
+    total_expense = sum(float(r.total_expense) for r in monthly_reports)
+    net_amount = total_income - total_expense
+    months_count = len(monthly_reports)
     
-    if yearly_stats['months_with_data'] > 0:
-        yearly_stats['avg_monthly_income'] = yearly_stats['total_income'] / yearly_stats['months_with_data']
-        yearly_stats['avg_monthly_expense'] = yearly_stats['total_expense'] / yearly_stats['months_with_data']
+    yearly_stats = {
+        'total_income': total_income,
+        'total_expense': total_expense,
+        'net_amount': net_amount,
+        'average_monthly_income': total_income / months_count if months_count > 0 else 0,
+        'average_monthly_expense': total_expense / months_count if months_count > 0 else 0,
+        'savings_rate': (net_amount / total_income * 100) if total_income > 0 else 0,
+        'months_with_data': months_count
+    }
     
     # 獲取所有可用的年份
     available_years = db.session.query(
