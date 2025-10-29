@@ -56,22 +56,33 @@ def create_app(config_name='development'):
         db.session.rollback()
         return render_template('errors/500.html'), 500
     
-    # 初始化資料庫和排程任務
-    with app.app_context():
-        # 建立資料表
-        db.create_all()
-        
-        # 初始化排程器（每月自動生成報表）
-        from utils.scheduler import init_scheduler
-        init_scheduler(app)
+    # 初始化資料庫和排程任務（僅在非生產環境或明確要求時）
+    # 生產環境應該使用 init_db.py 手動初始化資料庫
+    if config_name != 'production' or os.environ.get('INIT_DB') == 'true':
+        with app.app_context():
+            # 建立資料表
+            db.create_all()
+            print("✅ 資料表已建立")
+    
+    # 初始化排程器（僅在啟用時）
+    if os.environ.get('ENABLE_SCHEDULER', 'false').lower() == 'true':
+        with app.app_context():
+            from utils.scheduler import init_scheduler
+            init_scheduler(app)
+            print("✅ 排程器已啟動")
     
     return app
 
 
+# 為 gunicorn 等 WSGI 伺服器創建應用實例
+# 從環境變數讀取配置，部署環境預設為 production
+app = create_app(os.environ.get('FLASK_ENV', 'production'))
+
+
 if __name__ == '__main__':
-    # 從環境變數讀取配置，預設為 development
+    # 直接執行時的開發模式配置
     env = os.environ.get('FLASK_ENV', 'development')
-    app = create_app(env)
+    dev_app = create_app(env)
     
     # 開發環境配置
     debug_mode = env == 'development'
@@ -81,4 +92,4 @@ if __name__ == '__main__':
     print(f"📊 環境: {env}")
     print(f"🌐 訪問網址: http://localhost:{port}")
     
-    app.run(host='0.0.0.0', port=port, debug=debug_mode)
+    dev_app.run(host='0.0.0.0', port=port, debug=debug_mode)
