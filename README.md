@@ -61,8 +61,8 @@
 
 ### 1. 克隆專案
 ```bash
-git clone <your-repo-url>
-cd finance_manager
+git clone https://github.com/HACO8888/Financial-Management-System.git
+cd Financial-Management-System
 ```
 
 ### 2. 建立虛擬環境
@@ -98,7 +98,7 @@ python app.py
 ```
 
 ### 7. 訪問應用程式
-開啟瀏覽器，前往 `http://localhost:5000`
+開啟瀏覽器，前往 `http://localhost:8080`
 
 預設測試帳號：
 - 帳號：`test`
@@ -162,10 +162,10 @@ finance_manager/
 ### 部署命令範例
 ```bash
 # 使用 gunicorn
-gunicorn -w 4 -b 0.0.0.0:5000 app:app
+gunicorn -w 4 -b 0.0.0.0:8080 app:app
 
 # 或使用 uwsgi
-uwsgi --http 0.0.0.0:5000 --module app:app --processes 4
+uwsgi --http 0.0.0.0:8080 --module app:app --processes 4
 ```
 
 ## 📝 使用說明
@@ -213,9 +213,6 @@ uwsgi --http 0.0.0.0:5000 --module app:app --processes 4
 
 歡迎提交 Issue 和 Pull Request！
 
-## 📄 授權
-
-MIT License
 
 ## 📧 聯絡
 
