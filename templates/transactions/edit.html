@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}編輯交易 - 財務管理系統{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card">
+        <div class="card-header bg-warning text-white">
+          <h4 class="mb-0">
+            <i class="bi bi-pencil"></i> 編輯交易記錄
+          </h4>
+        </div>
+        <div class="card-body">
+          <form method="POST" action="{{ url_for('transactions.edit', id=transaction.id) }}">
+            <div class="mb-3">
+              <label class="form-label">交易類型</label>
+              <div class="btn-group w-100" role="group">
+                <input type="radio" class="btn-check" name="type" id="type_income" value="income" {% if
+                  transaction.type=='income' %}checked{% endif %} disabled>
+                <label class="btn btn-outline-success" for="type_income">
+                  <i class="bi bi-arrow-up-circle"></i> 收入
+                </label>
+
+                <input type="radio" class="btn-check" name="type" id="type_expense" value="expense" {% if
+                  transaction.type=='expense' %}checked{% endif %} disabled>
+                <label class="btn btn-outline-danger" for="type_expense">
+                  <i class="bi bi-arrow-down-circle"></i> 支出
+                </label>
+              </div>
+              <small class="text-muted">交易類型無法修改</small>
+            </div>
+
+            <div class="mb-3">
+              <label for="category_id" class="form-label">
+                類別 <span class="text-danger">*</span>
+              </label>
+              <select class="form-select" id="category_id" name="category_id" required>
+                {% for cat in categories %}
+                <option value="{{ cat.id }}" {% if cat.id==transaction.category_id %}selected{% endif %}>
+                  {{ cat.name }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="amount" class="form-label">
+                金額 <span class="text-danger">*</span>
+              </label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" class="form-control" id="amount" name="amount" step="0.01" min="0.01"
+                  value="{{ transaction.amount }}" required>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="date" class="form-label">
+                日期 <span class="text-danger">*</span>
+              </label>
+              <input type="date" class="form-control" id="date" name="date"
+                value="{{ transaction.date.strftime('%Y-%m-%d') }}" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="description" class="form-label">描述（選填）</label>
+              <textarea class="form-control" id="description" name="description"
+                rows="3">{{ transaction.description or '' }}</textarea>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-warning">
+                <i class="bi bi-check-circle"></i> 更新交易
+              </button>
+              <a href="{{ url_for('transactions.index') }}" class="btn btn-outline-secondary">
+                取消
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

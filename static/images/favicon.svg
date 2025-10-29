@@ -1,0 +1,16 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="32" height="32" rx="6" fill="#0d6efd"/>
+  
+  <!-- 錢包圖示（簡化版） -->
+  <g transform="translate(16, 16)">
+    <!-- 錢包主體 -->
+    <rect x="-9" y="-5" width="18" height="11" rx="2" fill="#fff"/>
+    
+    <!-- 錢包扣環 -->
+    <circle cx="0" cy="-1" r="3" fill="#0d6efd"/>
+    
+    <!-- 金錢符號 $ -->
+    <text x="0" y="1.5" font-family="Arial, sans-serif" font-size="6" font-weight="bold" fill="#fff" text-anchor="middle">$</text>
+  </g>
+</svg>

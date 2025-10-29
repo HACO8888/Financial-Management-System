@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}財務管理系統{% endblock %}</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+  <!-- 導航欄 -->
+  {% if current_user.is_authenticated %}
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for('dashboard.index') }}">
+        <i class="bi bi-wallet2"></i> 財務管理系統
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint == 'dashboard.index' %}active{% endif %}"
+              href="{{ url_for('dashboard.index') }}">
+              <i class="bi bi-speedometer2"></i> 儀表板
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint and 'transactions' in request.endpoint %}active{% endif %}"
+              href="{{ url_for('transactions.index') }}">
+              <i class="bi bi-cash-stack"></i> 交易管理
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint and 'goals' in request.endpoint %}active{% endif %}"
+              href="{{ url_for('goals.index') }}">
+              <i class="bi bi-bullseye"></i> 財務目標
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.endpoint and 'reports' in request.endpoint %}active{% endif %}"
+              href="{{ url_for('reports.index') }}">
+              <i class="bi bi-file-earmark-bar-graph"></i> 月報表
+            </a>
+          </li>
+        </ul>
+        <ul class="navbar-nav">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+              <i class="bi bi-person-circle"></i> {{ current_user.username }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li>
+                <a class="dropdown-item" href="{{ url_for('transactions.categories') }}">
+                  <i class="bi bi-tag"></i> 類別管理
+                </a>
+              </li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li>
+                <a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}">
+                  <i class="bi bi-box-arrow-right"></i> 登出
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  {% endif %}
+
+  <!-- Flash 訊息 -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="container mt-3">
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+
+  <!-- 主要內容 -->
+  <main class="{% if current_user.is_authenticated %}container-fluid{% endif %} mt-4 mb-5">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- 頁尾 -->
+  <footer class="bg-light text-center text-muted py-3 mt-5">
+    <div class="container">
+      <p class="mb-0">© 2025 個人財務管理系統 | 版本 1.0.0</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- jQuery (for convenience) -->
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+  <!-- Custom JS -->
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+  {% block extra_js %}{% endblock %}
+</body>
+
+</html>

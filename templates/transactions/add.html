@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}新增交易 - 財務管理系統{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">
+            <i class="bi bi-plus-circle"></i> 新增交易記錄
+          </h4>
+        </div>
+        <div class="card-body">
+          <form method="POST" action="{{ url_for('transactions.add') }}">
+            <div class="mb-3">
+              <label class="form-label">交易類型 <span class="text-danger">*</span></label>
+              <div class="btn-group w-100" role="group">
+                <input type="radio" class="btn-check" name="type" id="type_income" value="income" checked>
+                <label class="btn btn-outline-success" for="type_income">
+                  <i class="bi bi-arrow-up-circle"></i> 收入
+                </label>
+
+                <input type="radio" class="btn-check" name="type" id="type_expense" value="expense">
+                <label class="btn btn-outline-danger" for="type_expense">
+                  <i class="bi bi-arrow-down-circle"></i> 支出
+                </label>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="category_id" class="form-label">
+                類別 <span class="text-danger">*</span>
+              </label>
+              <select class="form-select" id="category_id" name="category_id" required>
+                <option value="">請選擇類別</option>
+                <optgroup label="收入類別" id="income_categories">
+                  {% for cat in categories if cat.type == 'income' %}
+                  <option value="{{ cat.id }}" data-type="income">{{ cat.name }}</option>
+                  {% endfor %}
+                </optgroup>
+                <optgroup label="支出類別" id="expense_categories" style="display: none;">
+                  {% for cat in categories if cat.type == 'expense' %}
+                  <option value="{{ cat.id }}" data-type="expense">{{ cat.name }}</option>
+                  {% endfor %}
+                </optgroup>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="amount" class="form-label">
+                金額 <span class="text-danger">*</span>
+              </label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" class="form-control" id="amount" name="amount" step="0.01" min="0.01"
+                  placeholder="0.00" required>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="date" class="form-label">
+                日期 <span class="text-danger">*</span>
+              </label>
+              <input type="date" class="form-control" id="date" name="date" value="{{ today }}" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="description" class="form-label">描述（選填）</label>
+              <textarea class="form-control" id="description" name="description" rows="3"
+                placeholder="記錄一些備註..."></textarea>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle"></i> 儲存交易
+              </button>
+              <a href="{{ url_for('transactions.index') }}" class="btn btn-outline-secondary">
+                取消
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // 根據交易類型切換類別
+  document.querySelectorAll('input[name="type"]').forEach(radio => {
+    radio.addEventListener('change', function () {
+      const categorySelect = document.getElementById('category_id');
+      const incomeOptgroup = document.getElementById('income_categories');
+      const expenseOptgroup = document.getElementById('expense_categories');
+
+      categorySelect.value = '';
+
+      if (this.value === 'income') {
+        incomeOptgroup.style.display = '';
+        expenseOptgroup.style.display = 'none';
+        // 顯示收入類別選項
+        categorySelect.querySelectorAll('option[data-type="income"]').forEach(opt => {
+          opt.style.display = '';
+        });
+        categorySelect.querySelectorAll('option[data-type="expense"]').forEach(opt => {
+          opt.style.display = 'none';
+        });
+      } else {
+        incomeOptgroup.style.display = 'none';
+        expenseOptgroup.style.display = '';
+        // 顯示支出類別選項
+        categorySelect.querySelectorAll('option[data-type="income"]').forEach(opt => {
+          opt.style.display = 'none';
+        });
+        categorySelect.querySelectorAll('option[data-type="expense"]').forEach(opt => {
+          opt.style.display = '';
+        });
+      }
+    });
+  });
+
+  // 設定預設日期為今天
+  document.getElementById('date').valueAsDate = new Date();
+</script>
+{% endblock %}

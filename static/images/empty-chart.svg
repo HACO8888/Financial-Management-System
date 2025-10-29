@@ -1,0 +1,45 @@
+<svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="300" height="300" fill="transparent"/>
+  
+  <!-- 圖表框架 -->
+  <g transform="translate(50, 50)">
+    <!-- 座標軸 -->
+    <line x1="0" y1="0" x2="0" y2="180" stroke="#dee2e6" stroke-width="3"/>
+    <line x1="0" y1="180" x2="200" y2="180" stroke="#dee2e6" stroke-width="3"/>
+    
+    <!-- Y 軸刻度 -->
+    <line x1="-5" y1="0" x2="0" y2="0" stroke="#ced4da" stroke-width="2"/>
+    <line x1="-5" y1="45" x2="0" y2="45" stroke="#ced4da" stroke-width="2"/>
+    <line x1="-5" y1="90" x2="0" y2="90" stroke="#ced4da" stroke-width="2"/>
+    <line x1="-5" y1="135" x2="0" y2="135" stroke="#ced4da" stroke-width="2"/>
+    <line x1="-5" y1="180" x2="0" y2="180" stroke="#ced4da" stroke-width="2"/>
+    
+    <!-- X 軸刻度 -->
+    <line x1="40" y1="180" x2="40" y2="185" stroke="#ced4da" stroke-width="2"/>
+    <line x1="80" y1="180" x2="80" y2="185" stroke="#ced4da" stroke-width="2"/>
+    <line x1="120" y1="180" x2="120" y2="185" stroke="#ced4da" stroke-width="2"/>
+    <line x1="160" y1="180" x2="160" y2="185" stroke="#ced4da" stroke-width="2"/>
+    <line x1="200" y1="180" x2="200" y2="185" stroke="#ced4da" stroke-width="2"/>
+    
+    <!-- 虛線網格 -->
+    <line x1="0" y1="45" x2="200" y2="45" stroke="#e9ecef" stroke-width="1" stroke-dasharray="5,5"/>
+    <line x1="0" y1="90" x2="200" y2="90" stroke="#e9ecef" stroke-width="1" stroke-dasharray="5,5"/>
+    <line x1="0" y1="135" x2="200" y2="135" stroke="#e9ecef" stroke-width="1" stroke-dasharray="5,5"/>
+    
+    <!-- 空的長條圖（虛線） -->
+    <rect x="20" y="100" width="30" height="80" rx="4" fill="none" stroke="#ced4da" stroke-width="2" stroke-dasharray="5,5" opacity="0.5"/>
+    <rect x="60" y="80" width="30" height="100" rx="4" fill="none" stroke="#ced4da" stroke-width="2" stroke-dasharray="5,5" opacity="0.5"/>
+    <rect x="100" y="120" width="30" height="60" rx="4" fill="none" stroke="#ced4da" stroke-width="2" stroke-dasharray="5,5" opacity="0.5"/>
+    <rect x="140" y="90" width="30" height="90" rx="4" fill="none" stroke="#ced4da" stroke-width="2" stroke-dasharray="5,5" opacity="0.5"/>
+    
+    <!-- 問號圖示 -->
+    <g transform="translate(100, 60)">
+      <circle cx="0" cy="0" r="25" fill="#f8f9fa" stroke="#ced4da" stroke-width="2"/>
+      <text x="0" y="10" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#adb5bd" text-anchor="middle">?</text>
+    </g>
+  </g>
+  
+  <!-- 文字說明 -->
+  <text x="150" y="270" font-family="Arial, sans-serif" font-size="18" fill="#6c757d" text-anchor="middle">暫無圖表資料</text>
+</svg>

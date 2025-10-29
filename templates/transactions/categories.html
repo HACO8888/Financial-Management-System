@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}類別管理 - 財務管理系統{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <h2><i class="bi bi-tag"></i> 類別管理</h2>
+    </div>
+    <div class="col-md-6 text-end">
+      <a href="{{ url_for('transactions.index') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left"></i> 返回交易列表
+      </a>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- 收入類別 -->
+    <div class="col-md-6 mb-4">
+      <div class="card">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0">
+            <i class="bi bi-arrow-up-circle"></i> 收入類別
+          </h5>
+        </div>
+        <div class="card-body">
+          <form method="POST" action="{{ url_for('transactions.add_category') }}" class="mb-3">
+            <div class="input-group">
+              <input type="text" class="form-control" name="name" placeholder="新增收入類別" required>
+              <input type="hidden" name="type" value="income">
+              <button type="submit" class="btn btn-success">
+                <i class="bi bi-plus"></i>
+              </button>
+            </div>
+          </form>
+
+          <div class="list-group">
+            {% for cat in income_categories %}
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+              <span>
+                {{ cat.name }}
+                {% if cat.is_default %}
+                <span class="badge bg-secondary">預設</span>
+                {% endif %}
+              </span>
+              {% if not cat.is_default %}
+              <form method="POST" action="{{ url_for('transactions.delete_category', id=cat.id) }}"
+                onsubmit="return confirm('確定要刪除這個類別嗎？');">
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+              {% endif %}
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 支出類別 -->
+    <div class="col-md-6 mb-4">
+      <div class="card">
+        <div class="card-header bg-danger text-white">
+          <h5 class="mb-0">
+            <i class="bi bi-arrow-down-circle"></i> 支出類別
+          </h5>
+        </div>
+        <div class="card-body">
+          <form method="POST" action="{{ url_for('transactions.add_category') }}" class="mb-3">
+            <div class="input-group">
+              <input type="text" class="form-control" name="name" placeholder="新增支出類別" required>
+              <input type="hidden" name="type" value="expense">
+              <button type="submit" class="btn btn-danger">
+                <i class="bi bi-plus"></i>
+              </button>
+            </div>
+          </form>
+
+          <div class="list-group">
+            {% for cat in expense_categories %}
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+              <span>
+                {{ cat.name }}
+                {% if cat.is_default %}
+                <span class="badge bg-secondary">預設</span>
+                {% endif %}
+              </span>
+              {% if not cat.is_default %}
+              <form method="POST" action="{{ url_for('transactions.delete_category', id=cat.id) }}"
+                onsubmit="return confirm('確定要刪除這個類別嗎？');">
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+              {% endif %}
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-info">
+    <i class="bi bi-info-circle"></i>
+    <strong>提示：</strong> 預設類別無法刪除。自訂類別只有在沒有被任何交易使用時才能刪除。
+  </div>
+</div>
+{% endblock %}

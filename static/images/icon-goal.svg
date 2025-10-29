@@ -1,0 +1,29 @@
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景圓形 -->
+  <circle cx="50" cy="50" r="45" fill="#0dcaf0" opacity="0.1"/>
+  
+  <!-- 靶心圖示 -->
+  <g transform="translate(50, 50)">
+    <!-- 外圈 -->
+    <circle cx="0" cy="0" r="35" fill="none" stroke="#0dcaf0" stroke-width="3" opacity="0.3"/>
+    
+    <!-- 中圈 -->
+    <circle cx="0" cy="0" r="25" fill="none" stroke="#0dcaf0" stroke-width="3" opacity="0.5"/>
+    
+    <!-- 內圈 -->
+    <circle cx="0" cy="0" r="15" fill="none" stroke="#0dcaf0" stroke-width="3" opacity="0.7"/>
+    
+    <!-- 中心點 -->
+    <circle cx="0" cy="0" r="6" fill="#0dcaf0"/>
+    
+    <!-- 箭頭命中靶心 -->
+    <g transform="rotate(-45)">
+      <line x1="-40" y1="-40" x2="-8" y2="-8" stroke="#ffc107" stroke-width="3" stroke-linecap="round"/>
+      <polygon points="-8,-8 -12,-4 -4,-12" fill="#ffc107"/>
+    </g>
+  </g>
+  
+  <!-- 裝飾星星 -->
+  <path d="M 20 25 L 22 30 L 27 30 L 23 33 L 25 38 L 20 35 L 15 38 L 17 33 L 13 30 L 18 30 Z" fill="#ffc107" opacity="0.5"/>
+  <path d="M 78 70 L 80 75 L 85 75 L 81 78 L 83 83 L 78 80 L 73 83 L 75 78 L 71 75 L 76 75 Z" fill="#ffc107" opacity="0.4"/>
+</svg>

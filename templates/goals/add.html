@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}新增目標 - 財務管理系統{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">
+            <i class="bi bi-plus-circle"></i> 新增財務目標
+          </h4>
+        </div>
+        <div class="card-body">
+          <form method="POST" action="{{ url_for('goals.add') }}">
+            <div class="mb-3">
+              <label for="name" class="form-label">
+                目標名稱 <span class="text-danger">*</span>
+              </label>
+              <input type="text" class="form-control" id="name" name="name" placeholder="例如：存錢買新筆電" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="goal_type" class="form-label">
+                目標類型 <span class="text-danger">*</span>
+              </label>
+              <select class="form-select" id="goal_type" name="goal_type" required>
+                <option value="">請選擇...</option>
+                <option value="saving">儲蓄目標（達到特定儲蓄金額）</option>
+                <option value="expense_limit">支出限制（控制支出在特定金額以下）</option>
+              </select>
+              <small class="text-muted">
+                儲蓄目標：追蹤您的淨收入累積<br>
+                支出限制：追蹤並限制您的總支出
+              </small>
+            </div>
+
+            <div class="mb-3">
+              <label for="target_amount" class="form-label">
+                目標金額 <span class="text-danger">*</span>
+              </label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" class="form-control" id="target_amount" name="target_amount" step="0.01" min="0.01"
+                  placeholder="10000.00" required>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="period" class="form-label">
+                期限類型 <span class="text-danger">*</span>
+              </label>
+              <select class="form-select" id="period" name="period" required>
+                <option value="">請選擇...</option>
+                <option value="monthly">每月（自動計算結束日期）</option>
+                <option value="yearly">每年（自動計算結束日期）</option>
+                <option value="custom">自訂期限（手動設定結束日期）</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="start_date" class="form-label">
+                開始日期 <span class="text-danger">*</span>
+              </label>
+              <input type="date" class="form-control" id="start_date" name="start_date" required>
+            </div>
+
+            <div class="mb-3" id="end_date_group" style="display: none;">
+              <label for="end_date" class="form-label">
+                結束日期 <span class="text-danger">*</span>
+              </label>
+              <input type="date" class="form-control" id="end_date" name="end_date">
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle"></i> 建立目標
+              </button>
+              <a href="{{ url_for('goals.index') }}" class="btn btn-outline-secondary">
+                取消
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // 設定預設開始日期為今天
+  document.getElementById('start_date').valueAsDate = new Date();
+
+  // 根據期限類型顯示/隱藏結束日期欄位
+  document.getElementById('period').addEventListener('change', function () {
+    const endDateGroup = document.getElementById('end_date_group');
+    const endDateInput = document.getElementById('end_date');
+
+    if (this.value === 'custom') {
+      endDateGroup.style.display = 'block';
+      endDateInput.required = true;
+    } else {
+      endDateGroup.style.display = 'none';
+      endDateInput.required = false;
+    }
+  });
+</script>
+{% endblock %}

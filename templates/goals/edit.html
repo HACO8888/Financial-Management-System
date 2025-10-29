@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}編輯目標 - 財務管理系統{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card">
+        <div class="card-header bg-warning text-white">
+          <h4 class="mb-0">
+            <i class="bi bi-pencil"></i> 編輯目標
+          </h4>
+        </div>
+        <div class="card-body">
+          <form method="POST" action="{{ url_for('goals.edit', id=goal.id) }}">
+            <div class="mb-3">
+              <label for="name" class="form-label">
+                目標名稱 <span class="text-danger">*</span>
+              </label>
+              <input type="text" class="form-control" id="name" name="name" value="{{ goal.name }}" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">目標類型</label>
+              <input type="text" class="form-control" value="{{ '儲蓄目標' if goal.goal_type == 'saving' else '支出限制' }}"
+                readonly disabled>
+              <small class="text-muted">目標類型無法修改</small>
+            </div>
+
+            <div class="mb-3">
+              <label for="target_amount" class="form-label">
+                目標金額 <span class="text-danger">*</span>
+              </label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input type="number" class="form-control" id="target_amount" name="target_amount" step="0.01" min="0.01"
+                  value="{{ goal.target_amount }}" required>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">開始日期</label>
+              <input type="text" class="form-control" value="{{ goal.start_date.strftime('%Y-%m-%d') }}" readonly
+                disabled>
+              <small class="text-muted">開始日期無法修改</small>
+            </div>
+
+            <div class="mb-3">
+              <label for="end_date" class="form-label">
+                結束日期
+              </label>
+              <input type="date" class="form-control" id="end_date" name="end_date"
+                value="{{ goal.end_date.strftime('%Y-%m-%d') if goal.end_date else '' }}">
+            </div>
+
+            <div class="alert alert-info">
+              <i class="bi bi-info-circle"></i>
+              目前進度：${{ "%.2f"|format(goal.current_amount|float) }} /
+              ${{ "%.2f"|format(goal.target_amount|float) }}
+              ({{ "%.1f"|format(goal.calculate_progress()) }}%)
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-warning">
+                <i class="bi bi-check-circle"></i> 更新目標
+              </button>
+              <a href="{{ url_for('goals.index') }}" class="btn btn-outline-secondary">
+                取消
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
