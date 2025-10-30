@@ -23,7 +23,7 @@
           {% for y in available_years %}
           <li>
             <a class="dropdown-item {% if y == year %}active{% endif %}"
-              href="{{ url_for('reports.yearly_summary', year=y) }}">
+              href="{{ url_for('reports.summary', year=y) }}">
               {{ y }} 年
             </a>
           </li>
